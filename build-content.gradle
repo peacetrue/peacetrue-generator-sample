@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+
+    dependencies {
+        classpath('com.github.peacetrue.generator:peacetrue-generator-plugin:1.0.0-SNAPSHOT')
+        classpath 'com.github.peacetrue.template:peacetrue-template-model-content:1.0.0-SNAPSHOT', {
+            exclude group: 'ch.qos.logback'
+        }
+        classpath('com.h2database:h2:1.4.196')
+    }
+}
+
+apply plugin: 'com.github.peacetrue.generator'
+peacetrueGenerate {
+    properties = [
+            'peacetrue.generator.target-path': "$rootDir",
+            'spring.datasource.schema'       : "file:$rootDir/src/main/resources/schema-h2.sql",
+    ]
+    propertiesPath = "file:$rootDir/src/main/resources/application.properties"
+    context = [
+            'project-name'     : "peacetrue-dictionary",
+            'basePackageName'  : 'com.github.peacetrue.dictionary',
+            'DomainName'       : 'Dictionary',
+            'domainDescription': '字典',
+    ]
+}
+
